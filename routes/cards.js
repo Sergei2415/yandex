@@ -1,13 +1,9 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable import/no-dynamic-require */
 const router = require('express').Router();
-const path = require('path');
-const fs = require('fs');
+const { getcards, postcards, deletecardsid } = require('../controllers/cards');
 
-let cards;
-fs.readFile(path.join(__dirname, '../data/cards.json'), { encoding: 'utf8' }, (err, data) => {
-  cards = JSON.parse(data);
-});
-router.get('/cards', (req, res) => {
-  res.send(cards);
-});
+router.get('/cards', getcards);
+router.post('/cards', postcards);
+router.delete('/cards/:id', deletecardsid);
 module.exports = router;
