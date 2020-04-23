@@ -22,5 +22,5 @@ app.use((req, res, next) => {
 });
 app.use(cardrouter);
 app.use(userrouter);
-
+app.get('*', (req, res) => { res.send(404, { message: 'Запрашиваемый ресурс не найден' }); });
 app.listen(PORT, () => {});

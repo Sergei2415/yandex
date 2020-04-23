@@ -5,12 +5,14 @@ module.exports.getusers = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => res.status(500).send({ message: err.message }));
 };
-module.exports.postusers = (req) => {
+module.exports.postusers = (req, res) => {
   const { name, about, avatar } = req.body;
-  users.create({ name, about, avatar });
+  users.create({ name, about, avatar })
+    .then((card) => res.send({ data: card }))
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 module.exports.getusersid = (req, res) => {
   users.findById(req.params.id)
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(404).send({ message: 'Произошла ошибка' }));
 };

@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable import/no-dynamic-require */
 const router = require('express').Router();
 const { getcards, postcards, deletecardsid } = require('../controllers/cards');
