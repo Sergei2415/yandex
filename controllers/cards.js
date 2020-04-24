@@ -1,3 +1,4 @@
+/* eslint-disable no-throw-literal */
 /* eslint-disable linebreak-style */
 const cards = require('../models/cards');
 
@@ -19,6 +20,9 @@ module.exports.postcards = (req, res) => {
 };
 module.exports.deletecardsid = (req, res) => {
   cards.findByIdAndRemove(req.params.id)
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if (card == null) { throw 'Ошибка при выполнении запроса'; }
+      res.send({ data: card });
+    })
     .catch(() => res.status(404).send({ message: 'Произошла ошибка' }));
 };

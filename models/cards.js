@@ -12,7 +12,7 @@ const cardSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator(v) {
-        return /(https?:\/\/(www\.)?(([А-Яа-яA-Za-z0-9-_]\/*\?*=*)+\.[a-z]{1,4}|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(\/?[A-Za-zА-Яа-я0-9-_\/]{1,})?(:\d{1,5})?(\/[A-Za-zА-Яа-я0-9-_\/]{1,})?#?|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d{1,5})?#?)|[A-Za-z]*\.[A-Za-z0-9]{2,20}(:\d{1,5})?(\/?[A-Za-zА-Яа-я0-9-_\/]{1,})?(:\d{1,5})?#?/.test(v);
+        return /^https?:(www\.)?\/((\/[А-Яа-яA-Za-z0-9-_\?=\.]{2,})(:\d{1,5})?|(\/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d{1,5})?){1}(\/[А-Яа-яA-Za-z0-9-_\?=\.&%]{1,})*(\.[А-Яа-яA-Za-z0-9-_=\.]{1,10})?\#?$/.test(v);
       },
       message: (props) => `${props.value} is not a valid url!`,
     },
@@ -24,7 +24,7 @@ const cardSchema = new mongoose.Schema({
   },
   likes: {
     type: Array,
-
+    default: [],
   },
   createdAt: {
     type: Date,
