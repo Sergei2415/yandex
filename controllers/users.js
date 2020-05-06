@@ -1,4 +1,6 @@
 /* eslint-disable no-throw-literal */
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const users = require('../models/users');
 
 module.exports.getusers = (req, res) => {
@@ -7,8 +9,14 @@ module.exports.getusers = (req, res) => {
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 module.exports.postusers = (req, res) => {
-  const { name, about, avatar } = req.body;
-  users.create({ name, about, avatar })
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt.hash(password, 10)
+  // eslint-disable-next-line no-shadow
+    .then((password) => users.create({
+      name, about, avatar, email, password,
+    }))
     .then((card) => res.send({ data: card }))
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
@@ -21,4 +29,17 @@ module.exports.getusersid = (req, res) => {
       res.send({ data: user });
     })
     .catch(() => res.status(404).send({ message: 'Произошла ошибка' }));
+};
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  return users.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, '402271a490b1da84693aaed3aa8b3dbdade403a609d072c6c10b5e4b55d53880', { expiresIn: '7d' });
+      res.cookie('name', token, { maxAge: 3600000 * 24 * 7 });
+      res.send({ token });
+    })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
+    });
 };
