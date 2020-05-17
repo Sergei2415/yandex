@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-throw-literal */
 /* eslint-disable linebreak-style */
 const cards = require('../models/cards');
@@ -19,10 +20,15 @@ module.exports.postcards = (req, res) => {
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 module.exports.deletecardsid = (req, res) => {
-  cards.findByIdAndRemove(req.params.id)
+  cards.findById(req.params.id)
+    .then((card) => {
+      if (card.owner === req.user._id) return cards.findByIdAndRemove(req.params.id);
+    })
     .then((card) => {
       if (card == null) { throw 'Ошибка при выполнении запроса'; }
       res.send({ data: card });
     })
-    .catch(() => res.status(404).send({ message: 'Произошла ошибка' }));
+    .catch(() => {
+      res.status(404).send({ message: 'Произошла ошибка' });
+    });
 };

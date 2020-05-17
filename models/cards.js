@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-escape */
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -11,10 +12,8 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     validate: {
-      validator(v) {
-        return /^https?:(www\.)?\/((\/[А-Яа-яA-Za-z0-9-_\?=\.]{2,})(:\d{1,5})?|(\/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d{1,5})?){1}(\/[А-Яа-яA-Za-z0-9-_\?=\.&%]{1,})*(\.[А-Яа-яA-Za-z0-9-_=\.]{1,10})?\#?$/.test(v);
-      },
-      message: (props) => `${props.value} is not a valid url!`,
+      validator: (v) => validator.isURL(v),
+      message: 'Неправильный формат url',
     },
     required: true,
   },
