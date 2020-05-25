@@ -7,5 +7,4 @@ const { getusers, getusersid } = require('../controllers/users');
 router.get('/users', getusers);
 router.get('/users/:id', getusersid);
 
-
 module.exports = router;
