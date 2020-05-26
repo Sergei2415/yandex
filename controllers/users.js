@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-const-assign */
 /* eslint-disable no-shadow */
 /* eslint-disable consistent-return */
@@ -20,7 +21,11 @@ module.exports.postusers = (req, res, next) => {
     .then((hash) => users.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send({
+      data: {
+        _id: card._id, name: card.name, about: card.about, email: card.email, __v: card.__v,
+      },
+    }))
     .catch(next);
 };
 

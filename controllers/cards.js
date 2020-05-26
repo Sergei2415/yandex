@@ -2,7 +2,7 @@
 /* eslint-disable no-throw-literal */
 /* eslint-disable linebreak-style */
 const cards = require('../models/cards');
-const { AuthorizationError } = require('../errors/AuthorizationError');
+const { AccessDenied } = require('../errors/AccessDenied');
 const { EntryNotFound } = require('../errors/EntryNotFound');
 
 module.exports.getcards = (req, res, next) => {
@@ -30,7 +30,7 @@ module.exports.deletecardsid = (req, res, next) => {
         return cards.findByIdAndRemove(req.params.id);
       }
 
-      return next(new AuthorizationError('Данная запись небыла удалена, так как не вы её создатель'));
+      return next(new AccessDenied('Данная запись небыла удалена, так как не вы её создатель'));
     })
     .catch(next);
 };

@@ -53,6 +53,9 @@ app.use(errorLogger);
 app.use((err, req, res, next) => {
   const status = err.status || 500;
   const { message } = err;
+  if (err.status === 403) {
+    return res.status(403).send({ 'Access Denied': message });
+  }
   if (err.name === 'AuthorizationError') {
     return res.status(status).send({ 'Authorization Error': message });
   }
