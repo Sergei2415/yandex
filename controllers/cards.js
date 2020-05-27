@@ -2,13 +2,15 @@
 /* eslint-disable no-throw-literal */
 /* eslint-disable linebreak-style */
 const cards = require('../models/cards');
+const { AccessDenied } = require('../errors/AccessDenied');
+const { EntryNotFound } = require('../errors/EntryNotFound');
 
-module.exports.getcards = (req, res) => {
+module.exports.getcards = (req, res, next) => {
   cards.find({})
     .then((card) => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(next);
 };
-module.exports.postcards = (req, res) => {
+module.exports.postcards = (req, res, next) => {
   const owner = req.user._id;
   const {
     name, link,
@@ -17,18 +19,18 @@ module.exports.postcards = (req, res) => {
     name, link, owner,
   })
     .then((card) => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(next);
 };
-module.exports.deletecardsid = (req, res) => {
+module.exports.deletecardsid = (req, res, next) => {
   cards.findById(req.params.id)
     .then((card) => {
-      if (card.owner === req.user._id) return cards.findByIdAndRemove(req.params.id);
+      if (card == null) return next(new EntryNotFound('Данная запись не найдена'));
+      if (card.owner === req.user._id) {
+        res.send({ data: card });
+        return cards.findByIdAndRemove(req.params.id);
+      }
+
+      return next(new AccessDenied('Данная запись небыла удалена, так как не вы её создатель'));
     })
-    .then((card) => {
-      if (card == null) { throw 'Ошибка при выполнении запроса'; }
-      res.send({ data: card });
-    })
-    .catch(() => {
-      res.status(404).send({ message: 'Произошла ошибка' });
-    });
+    .catch(next);
 };
